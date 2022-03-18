@@ -10,28 +10,25 @@
 	$user_table_name = "USER_INFO";
 	$todo_table_name = "to_do";
 
-/*---------- Login table field details ----------*/
+/*---------- User table field details ----------*/
 	$table_field_id = "user_id";
 	$table_field_email = "email";
 	$table_field_pwd = "password";
 	$table_field_reset_token = "reset_token";
 
+/*---------- Todo table field details ----------*/
+	$table_field_line_id = "line_id";
+	$table_field_name = "name";
+	$table_field_description = "description";
+	$table_field_status = "status";
+
 /*----------- common table details ---------------*/
-	$status = "Active";
-	$user_level = "Admin";
+
 	$table_field_create ="created_timestamp";
 	$table_field_update ="updated_timestamp";
-
-/*---------- manage-authority table field details ----------*/
-	$authority_rox_table_field_web_access = "rox_web_access";
-
-
-/*----------- manage-authority table details ---------------*/
-	$authority_rox_status = "1";
 
 /*----------- Access Code ---------------*/
 	$secret_server_key = "QWERTYUIasdfghjk";
 	$lock_token = null;
-
 		
 ?>
