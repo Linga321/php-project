@@ -4,7 +4,7 @@
     -> Php 7.x 
     -> PostgreSQL
     -> php localhost servers (ex-XAMPP)
-       ->php.ini modify or remove char ;
+       ->php.ini modify and remove char ';' before extension 
           ->extension=pdo_mysql
           ->extension=pdo_pgsql
 ##### Postgresql information stored in php-project\test-todo\api\library\dbcon.php only needed to change 
