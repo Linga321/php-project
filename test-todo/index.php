@@ -1,0 +1,5 @@
+<?php
+include('api/library/config.php');
+
+include(TEMPLATE.'_site.php');
+?>
