@@ -10,7 +10,7 @@
     header('Access-Control-Allow-Origin:*');
 	header('Content-Type:application/json');
 
-	if(!empty($_POST['user_name']) && !empty($_POST['user_password'])){
+	if($_SERVER['REQUEST_METHOD'] === 'POST'){
 		include("../library/table_info.php");
 		include('../class/class_auth.php');
 		include('../class/class_validation.php');

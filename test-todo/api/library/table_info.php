@@ -29,6 +29,5 @@
 
 /*----------- Access Code ---------------*/
 	$secret_server_key = "QWERTYUIasdfghjk";
-	$lock_token = null;
 		
 ?>

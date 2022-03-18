@@ -13,7 +13,7 @@ class login_class
 { 
 
 
-    public static function login_authondicate($email="",$password_md5="")
+    public static function login_authondicate($email="",$password="")
     {		
 		$user_table_name = null;
 		$table_field_email = null;
@@ -22,7 +22,13 @@ class login_class
 		include("../library/dbcon.php");
 		include("../library/table_info.php");
 		include('../class/jwt.php');
-        $sql = "SELECT user_id, email, password FROM ".$user_table_name." WHERE ".$table_field_email."='".$email."' AND ".$table_field_pwd." = '".$password_md5."'";
+		
+        $sql = "SELECT {$table_field_id}, 
+					{$table_field_email}, 
+					{$table_field_pwd} FROM 
+					{$user_table_name} WHERE 
+						{$table_field_email}='{$email}' AND 
+						{$table_field_pwd} = '{$password}'";
         $result=pg_query($conn,$sql);
         $rowcount=pg_num_rows($result);
         if ($rowcount== 1) {
@@ -33,7 +39,7 @@ class login_class
 		else{
 			return null;
 		}
-        pg_close();		
+        pg_close($conn);		
     }
 
 	public static function token_validate($token="")
@@ -47,7 +53,12 @@ class login_class
 		include('../class/jwt.php');
 		$token_data = JWT_AUTH::get_token($token);
 		
-        $sql = "SELECT user_id, email, password FROM ".$user_table_name." WHERE ".$table_field_email."='".$token_data->email."' AND ".$table_field_pwd." = '".$token_data->password."'";
+        $sql = "SELECT {$table_field_id}, 
+			{$table_field_email}, 
+			{$table_field_pwd} FROM 
+			{$user_table_name} WHERE 
+				{$table_field_email}='{$token_data->email}' AND 
+				{$table_field_pwd} = '{$token_data->password}'";
         $result=pg_query($conn,$sql);
         $rowcount=pg_num_rows($result);
         if ($rowcount== 1) {
@@ -56,7 +67,7 @@ class login_class
 		else{
 			return 0;
 		}
-        pg_close();		
+        pg_close($conn);		
     }
 	
 	
@@ -69,15 +80,11 @@ class login_class
 		include("../library/dbcon.php");
 		include("../library/table_info.php");
 		
-        $sql = "SELECT * FROM ".$user_table_name." WHERE ".$table_field_email."='$email'";
-        $result=pg_query($conn,$sql);
-        $rowcount=pg_num_rows($result);
-        if ($rowcount>0) {
-            return 2;
-        }else{
-			return 1;
-		}
-        pg_close();		
+        $sql = "SELECT * FROM {$user_table_name} WHERE 
+				{$table_field_email}='{$email}'";
+        $result =pg_query($conn, $sql);
+		return pg_affected_rows($result);
+		pg_close($conn);		
     }
 
 
@@ -94,17 +101,12 @@ class login_class
 		$token = JWT_AUTH::get_token($tokendata);
 		$token_email =$token['email'];
 	
-        $sql = "UPDATE ".$user_table_name." SET 
-				".$table_field_reset_token." ='$reset_codemd5' 
-				WHERE ".$table_field_email."='$token_email'";
-		
-        if (!pg_query($conn, $sql)) {
-			return 2;
-			
-		} else {			
-			return $reset_code;
-		}
-        pg_close($conn);			
+        $sql = "UPDATE {$user_table_name} SET 
+				{$table_field_reset_token} ='{$reset_codemd5}' 
+				WHERE {$table_field_email}='{$token_email}'";
+		$result =pg_query($conn, $sql);
+		return pg_affected_rows($result);
+		pg_close($conn);			
     }
 	
 	public static function reset_code_generate($email="")
@@ -119,17 +121,13 @@ class login_class
 		
 		$reset_code = Random_password::reset_code(20);
 		$reset_codemd5= md5($reset_code);
-        $sql = "UPDATE ".$user_table_name." SET 
-				".$table_field_reset_token." ='$reset_codemd5' 
-				WHERE ".$table_field_email."='$email'";
+        $sql = "UPDATE {$user_table_name} SET 
+				{$table_field_reset_token} ='{$reset_codemd5}' 
+				WHERE {$table_field_email}='{$email}'";
 		
-        if (!pg_query($conn, $sql)) {
-			return 2;
-			
-		} else {			
-			return $reset_code;
-		}
-        pg_close($conn);	
+        $result =pg_query($conn, $sql);
+		return pg_affected_rows($result);
+		pg_close($conn);	
     }
 	
 	
@@ -145,13 +143,13 @@ class login_class
 		include("../library/dbcon.php");
 		include("../library/table_info.php");
 		
-        $sql = "UPDATE ".$user_table_name." SET 
-			".$table_field_pwd." = '".$password_new."',
-			".$table_field_update."  = CURRENT_TIMESTAMP
-			WHERE ".$table_field_pwd." ='".$password_old."' AND ".$table_field_id." =".$user_id.";";
-		pg_query($conn, $sql);
-		return pg_affected_rows($conn);
-		pg_close($con);
+        $sql = "UPDATE {$user_table_name} SET 
+			{$table_field_pwd} = '{$password_new}',
+			{$table_field_update}  = 'NOW()'
+			WHERE {$table_field_pwd} ='{$password_old}' AND {$table_field_id} ='{$user_id}';";
+		$result =pg_query($conn, $sql);
+		return pg_affected_rows($result);
+		pg_close($conn);
     }
 
 	public static function insert_user($email="",$password="")
@@ -162,14 +160,11 @@ class login_class
 		$conn = null;
 		include("../library/dbcon.php");
 		include("../library/table_info.php");
-        $sql = "INSERT INTO ".$user_table_name." (".$table_field_email." , ".$table_field_pwd.") VALUES ('".$email."','".$password."');";
+        $sql = "INSERT INTO {$user_table_name} ({$table_field_email} , {$table_field_pwd}) VALUES ('{$email}','{$password}');";
 		
-        if (!pg_query($conn, $sql)) {
-			return 2;
-		} else {			
-			return 1;
-		}
-        pg_close($conn);	
+        $result =pg_query($conn, $sql);
+		return pg_affected_rows($result);
+		pg_close($conn);	
     }
 	
 }

@@ -9,12 +9,16 @@
 
 // echo extension_loaded('pgsql') ? 'yes':'no';
 
-$host        = "host =127.0.0.1";
-$port        = "port =5432";
-$dbname      = "dbname =postgres";
-$credentials = "user =postgres password=postgres";
+$host        = "127.0.0.1"; // host address
+$port        = "5432"; // port number
+$dbname      = "postgres";  //database name
+$credentials = ['postgres','postgres']; //['username','password']
 
-$conn = pg_connect("host =".$host." port =".$port." dbname =".$dbname." ".$credentials." ");
+$conn = pg_connect("host ={$host} 
+                    port ={$port} 
+                    dbname ={$dbname} 
+                    user={$credentials[0]} 
+                    password={$credentials[1]}");
 if(!$conn) {
     echo "Error : Unable to open database\n";
 } else {
