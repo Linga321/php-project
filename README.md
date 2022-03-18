@@ -8,7 +8,7 @@
           ->extension=pdo_mysql
           ->extension=pdo_pgsql
 ##### Postgresql information stored in php-project\test-todo\api\library\dbcon.php 
- Should be changed only according to the structure 
+ ######Should be changed only according to the structure 
     ->$host        = "127.0.0.1"; // host address
     ->$port        = "5432"; // port number
     ->$dbname      = "postgres";  //database name
